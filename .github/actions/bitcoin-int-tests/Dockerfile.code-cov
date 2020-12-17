@@ -15,5 +15,5 @@ RUN cargo test -j 1 --no-run
 RUN cargo test
 RUN zip -0 /tmp/ccov.zip `find . \( -name "blockstack_*.gc*" \) -print` &&  grcov /tmp/ccov.zip -s . -t html --llvm --ignore-not-existing --ignore "/*" -o /out/codecov;
 
-# FROM scratch AS export-stage
-# COPY --from=build /out/codecov /
+FROM scratch AS export-stage
+COPY --from=build /out/codecov /

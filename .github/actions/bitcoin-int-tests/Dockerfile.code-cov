@@ -1,4 +1,4 @@
-FROM rust:buster
+FROM rust:buster AS build
 
 WORKDIR /build
 

@@ -53,9 +53,6 @@ jobs:
       - name: All integration tests with sampled genesis
         env:
           DOCKER_BUILDKIT: 1
-          CARGO_INCREMENTAL: 0
-          RUSTFLAGS: "-Zprofile -Copt-level=0 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort"
-          RUSTDOCFLAGS: "-Cpanic=abort"
         run: docker build -f ./.github/actions/bitcoin-int-tests/Dockerfile.bitcoin-tests .
 
   # Run unit tests with code coverage

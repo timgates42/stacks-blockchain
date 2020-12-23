@@ -2,18 +2,19 @@ FROM rust:buster AS build
 
 WORKDIR /build
 
-RUN rustup override set nightly
-RUN cargo install grcov
+RUN rustup override set nightly && \
+    rustup component add llvm-tools-preview && \
+    cargo install grcov
 
-ENV CARGO_INCREMENTAL=0 \
-    RUSTFLAGS="-Zprofile -Copt-level=0 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort" \
-    RUSTDOCFLAGS="-Cpanic=abort"
+ENV RUSTFLAGS="-Zinstrument-coverage"
     
 COPY . .
 
-RUN cargo test -j 1 --no-run
-RUN cargo test
-RUN zip -0 /tmp/ccov.zip `find . \( -name "blockstack_*.gc*" \) -print` &&  grcov /tmp/ccov.zip -s . -t html --llvm --ignore-not-existing --ignore "/*" -o /out/codecov;
+RUN cargo build && \
+    cargo test
+
+# RUN zip -0 /tmp/ccov.zip `find . \( -name "blockstack_*.gc*" \) -print` &&  grcov /tmp/ccov.zip -s . -t html --llvm --ignore-not-existing --ignore "/*" -o /out/codecov;
+RUN grcov . -s . --binary-path ./target/debug/ -t html --branch --ignore-not-existing -o ./target/debug/coverage/
 
 FROM scratch AS export-stage
 COPY --from=build /out/codecov /

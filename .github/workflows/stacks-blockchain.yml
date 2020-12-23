@@ -50,18 +50,9 @@ jobs:
   sampled-genesis:
 =======
       - name: Run units tests (with coverage)
-        # env:
-        #   # DOCKER_BUILDKIT: 1
-        #   CARGO_INCREMENTAL: 0
-        #   RUSTFLAGS: "-Zprofile -Copt-level=0 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort"
-        #   RUSTDOCFLAGS: "-Cpanic=abort"
+        env:
+          DOCKER_BUILDKIT: 1
         run: docker build -f ./.github/actions/bitcoin-int-tests/Dockerfile.code-cov .
-
-      - name: Run units tests (with coverage)
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          file: ./.github/actions/bitcoin-int-tests/Dockerfile.code-cov
 
   # Run neon tests
   neon-tests:
